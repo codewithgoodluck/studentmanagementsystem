@@ -1,13 +1,44 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* @tailwind base; 
+@tailwind components; 
+@tailwind utilities;  */
+
+
+.navbarcolor{
+    background-color: red!important;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+.MuiSlider-root {
+    color: #4220b2;
+  }
+  
+  .MuiSlider-root:hover {
+    color: red;
+  }
+
+  .ScrollStyle
+  {
+      height: 550px;
+      overflow-y: scroll;
+    
+  }
+
+  /* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  .ScrollStyle::-webkit-scrollbar-track {
+    background: #586686;
+  }
+  
+  /* Handle */
+  /* .ScrollStyle::-webkit-scrollbar-thumb {
+    background: #0057FF;
+  }
+   */
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+   
+    background: #0057FF;
+  }
