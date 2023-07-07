@@ -1,4 +1,5 @@
 import { React, useState } from "react";
+import {useDispatch} from 'react-redux';
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../style/style";
 import { Link } from "react-router-dom";
@@ -7,6 +8,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core/styles";
+import { useNavigate } from "react-router-dom";
+import { RegisterUser, validateEmail } from "../service/authServices";
 
 const Singup = () => {
     const theme = createMuiTheme({
@@ -27,13 +30,78 @@ const Singup = () => {
           }
         }
       });
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const [parentname, setPname] = useState("");
-  
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  // const [name, setName] = useState("");
+  // const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const disptch = useDispatch();
+  const navigate = useNavigate();
+
+  const initialState = {
+    name:"",
+    email:"",
+    gender:"",
+    password:"",
+    password2:"",
+    bio:"",
+    photo:"",
+    phone:""
+  }
+
+  const [formData, setFormData] = useState(initialState);
+  const [isLoading, setIsLoading] = useState(false);
+  const {name,email,password, password2, bio, photo, phone, gender} = formData
+
+  const handleInputChange = (e) =>{
+    const {name, email, password, bio,phone,photo, value} = e.target;
+    console.log(name)
+    setFormData({...formData,[name] :value, [email] :value, [gender] :value, [bio] :value,[photo] :value, [email] :value, [password] :value})
+  }
+
+  const register = async(e) =>{
+    console.log("love")
+    e.preventDefault();
+
+    if (!name || !email || !password || !bio || !photo || !phone || !gender ) {
+      return toast.error("All fields are required");
+    }
+    if (password.length < 6) {
+      return toast.error("Passwords must be up to 6 characters");
+    }
+    if (!validateEmail(email)) {
+      return toast.error("Please enter a valid email");
+    }
+    if (password !== password2) {
+      return toast.error("Passwords do not match");
+    }
+     const userData = {
+       name:name,
+       email :email,
+       password:password,
+       password2:password2,
+       bio:bio,
+       photo:photo,
+       phone:phone,
+       gender:gender,
+     }
+     setIsLoading(true)
+     try {
+       const data = await RegisterUser(userData)
+       console.log(data)
+      //  await dispatch(SET_LOGIN(true))
+      //  await dispatch(SET_NAME(data.name))
+       navigate('/dashboard')
+       setIsLoading(false)
+     } catch (error) {
+       setIsLoading(false)
+       console.log(error)
+     }
+     }
+
+
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -46,7 +114,7 @@ const Singup = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md ScrollStyle">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
       
-          <form className="space-y-6 ">
+          <form onSubmit={register}  className="space-y-6 ">
             <div>
               <label
                 htmlFor="email"
@@ -57,10 +125,11 @@ const Singup = () => {
               <div className="mt-1">
                 <input
                   type="text"
-                  name="text"
+                  name="name"
                   autoComplete="name"
                   required
-               
+                  value={name}
+                  onChange={handleInputChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
@@ -82,40 +151,22 @@ const Singup = () => {
                 </select>
               </div>
             </div>
+       
             <div>
               <label
-                htmlFor="email"
+                htmlFor="phone"
                 className="block text-sm font-medium text-gray-700"
               >
-                Student Email address
+                Phone Number
               </label>
               <div className="mt-1">
                 <input
-                  type="email"
-                  name="email"
-                  autoComplete="email"
+                  type="number"
+                  name="phone"
+                  autoComplete="phone"
                   required
-                  value={email}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-              </div>
-            </div>
-
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Parent Name
-              </label>
-              <div className="mt-1">
-                <input
-                  type="pname"
-                  name="parentname"
-                  autoComplete="text"
-                  required
-                  value={parentname}
+                  onChange={handleInputChange}
+                  value={phone}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
@@ -125,7 +176,7 @@ const Singup = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Parent Phone Number
+                Email address
               </label>
               <div className="mt-1">
                 <input
@@ -133,24 +184,7 @@ const Singup = () => {
                   name="email"
                   autoComplete="email"
                   required
-                  value={email}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Parent Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  required
+                  onChange={handleInputChange}
                   value={email}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
@@ -172,8 +206,43 @@ const Singup = () => {
                   name="password"
                   autoComplete="current-password"
                   required
+                  onChange={handleInputChange}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  // onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+                {visible ? (
+                  <AiOutlineEye
+                    className="absolute right-2 top-2 cursor-pointer"
+                    size={25}
+                    onClick={() => setVisible(false)}
+                  />
+                ) : (
+                  <AiOutlineEyeInvisible
+                    className="absolute right-2 top-2 cursor-pointer"
+                    size={25}
+                    onClick={() => setVisible(true)}
+                  />
+                )}
+              </div>
+            </div>
+            
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Confirm Password
+              </label>
+              <div className="mt-1 relative">
+                <input
+                  type={visible ? "text" : "password2"}
+                  name="password2"
+                  autoComplete="password2"
+                  required
+                  value={password2}
+                  onChange={handleInputChange}
+                  // onChange={(e) => setPassword(e.target.value)}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
                 {visible ? (

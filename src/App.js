@@ -16,12 +16,10 @@ function App() {
     <>
       <Routes>
         {/* <Route path="/lay" element={<Layout></Layout>}></Route> */}
-        <Route path="/clases" element={<Clases />}></Route>
+        {/* <Route path="" element={<Clases />}></Route> */}
         <Route path="/dashbaord" element={<Dashboard />}></Route>
         <Route path="/loginpage" element={< LoginPage />}></Route>
-        <Route path="/signpage" element={<Singup />}></Route>
-       
-       
+        <Route path="/" element={<Singup />}></Route>
       </Routes>
     
     </>
