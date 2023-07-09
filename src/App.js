@@ -9,6 +9,9 @@ import Clases from "./pages/Clases";
 import LoginPage from "./pages/LoginPage";
 import Singup from "./component/Singup";
 import Footer from "./component/Footer";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function App() {
@@ -19,9 +22,9 @@ function App() {
         {/* <Route path="" element={<Clases />}></Route> */}
         <Route path="/dashbaord" element={<Dashboard />}></Route>
         <Route path="/loginpage" element={< LoginPage />}></Route>
-        <Route path="/" element={<Singup />}></Route>
+        <Route path="/" element={<Singup/>}></Route>
       </Routes>
-    
+      <ToastContainer />
     </>
   );
 }

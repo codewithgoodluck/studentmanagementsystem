@@ -10,6 +10,8 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core/styles";
 import { useNavigate } from "react-router-dom";
 import { RegisterUser, validateEmail } from "../service/authServices";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Singup = () => {
     const theme = createMuiTheme({
@@ -45,26 +47,44 @@ const Singup = () => {
     gender:"",
     password:"",
     password2:"",
-    bio:"",
     photo:"",
-    phone:""
+    phone:"",
+    gender:""
   }
 
   const [formData, setFormData] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
-  const {name,email,password, password2, bio, photo, phone, gender} = formData
+  const [gender, setCurrentGender] = useState(" ");
+  const [selectedFile, setSelectedFile] = useState(null);
+  console.log(selectedFile)
+ 
+  const {name,email,password, password2, photo, phone} = formData;
+
+const changeGender = (changegender)=>{
+  setCurrentGender(changegender)
+  setFormData({...formData, gender})
+  console.log(gender)
+}
+
+
+const handleFileChange = (e) => {
+   setSelectedFile(e.target.files[0]);
+   setFormData({...formData, photo})
+   
+};
+
 
   const handleInputChange = (e) =>{
-    const {name, email, password, bio,phone,photo, value} = e.target;
-    console.log(name)
-    setFormData({...formData,[name] :value, [email] :value, [gender] :value, [bio] :value,[photo] :value, [email] :value, [password] :value})
+    const {name, email, password,phone,photo, value} = e.target;
+   
+    setFormData({...formData,[name] :value, [email] :value, [gender] :value,  [phone] :value, [email] :value, [password] :value , [gender] :value})
   }
 
   const register = async(e) =>{
     console.log("love")
     e.preventDefault();
 
-    if (!name || !email || !password || !bio || !photo || !phone || !gender ) {
+    if (!name || !email || !password ) {
       return toast.error("All fields are required");
     }
     if (password.length < 6) {
@@ -81,7 +101,6 @@ const Singup = () => {
        email :email,
        password:password,
        password2:password2,
-       bio:bio,
        photo:photo,
        phone:phone,
        gender:gender,
@@ -89,10 +108,10 @@ const Singup = () => {
      setIsLoading(true)
      try {
        const data = await RegisterUser(userData)
-       console.log(data)
+      //  console.log(data.bio)
       //  await dispatch(SET_LOGIN(true))
       //  await dispatch(SET_NAME(data.name))
-       navigate('/dashboard')
+      //  navigate('/dashboard')
        setIsLoading(false)
      } catch (error) {
        setIsLoading(false)
@@ -142,11 +161,15 @@ const Singup = () => {
                 Gender
               </label>
               <div className="mt-1 w-full">
-                <select className="select select-bordered select-sm w-full ">
-                  <option disabled selected>
+                <select className="select select-bordered select-sm w-full "
+                onChange={(e) => changeGender(e.target.value)}
+                value={gender}
+                
+                >
+                  <option value="Male">
                     Male
                   </option>
-                  <option>Female</option>
+                  <option value="Female">Female</option>
                  
                 </select>
               </div>
@@ -179,7 +202,7 @@ const Singup = () => {
                 Email address
               </label>
               <div className="mt-1">
-                <input
+                <input 
                   type="email"
                   name="email"
                   autoComplete="email"
@@ -289,7 +312,10 @@ const Singup = () => {
                     id="file-input"
                     accept=".jpg,.jpeg,.png"
                     className="sr-only"
+                    onChange={handleFileChange} 
                   />
+                  {/* <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload</button> */}
                 </label>
               </div>
             </div>
